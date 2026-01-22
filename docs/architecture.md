@@ -7,10 +7,10 @@ intelligent-data-viz/
 ├── src/
 │   ├── config/          # Configuration management
 │   ├── utils/           # Utilities (logging, exceptions)
-│   ├── llm/             # LLM integration (Person 1)
-│   ├── data/            # Data processing (Person 1)
-│   ├── visualization/   # Visualization generation (Person 2)
-│   └── ui/              # User interface (Person 2)
+│   ├── llm/             # LLM integration 
+│   ├── data/            # Data processing 
+│   ├── visualization/   # Visualization generation 
+│   └── ui/              # User interface 
 ├── tests/
 │   ├── unit/            # Unit tests
 │   └── integration/     # Integration tests
