@@ -10,70 +10,189 @@ class DataProcessor:
 
     def __init__(self, max_file_size_mb: int = 10):
         """Initialize the data processor.
-
+        
         Args:
             max_file_size_mb: Maximum file size in megabytes
         """
         self.max_file_size_bytes = max_file_size_mb * 1024 * 1024
-
+    
+    def _detect_encoding(self, file_content: bytes) -> str:
+        """Detect file encoding.
+        
+        Args:
+            file_content: Raw file bytes
+            
+        Returns:
+            Detected encoding (e.g., 'utf-8', 'latin-1')
+        """
+        result = chardet.detect(file_content)
+        encoding = result['encoding']
+        
+        # Default to utf-8 if detection fails
+        if encoding is None:
+            encoding = 'utf-8'
+        
+        # Handle common encoding aliases
+        encoding_map = {
+            'ascii': 'utf-8',
+            'windows-1252': 'cp1252',
+        }
+        
+        return encoding_map.get(encoding.lower(), encoding)
+    
+    def _detect_separator(self, file_content: str, encoding: str = 'utf-8') -> str:
+        """Detect CSV separator/delimiter.
+        
+        Args:
+            file_content: File content as string or bytes
+            encoding: File encoding
+            
+        Returns:
+            Detected separator (comma, semicolon, tab, pipe)
+        """
+        # Convert bytes to string if needed
+        if isinstance(file_content, bytes):
+            sample = file_content.decode(encoding, errors='replace')[:1000]
+        else:
+            sample = file_content[:1000]
+        
+        # Count potential separators in first few lines
+        separators = {
+            ',': sample.count(','),
+            ';': sample.count(';'),
+            '\t': sample.count('\t'),
+            '|': sample.count('|')
+        }
+        
+        # Return the most common one
+        detected = max(separators, key=separators.get)
+        
+        # Default to comma if no clear winner
+        if separators[detected] == 0:
+            detected = ','
+        
+        return detected
+    
     def load_csv(
-        self, file_path: Optional[str] = None, file_content: Optional[bytes] = None
+        self, 
+        file_path: Optional[str] = None,
+        file_content: Optional[bytes] = None,
+        encoding: Optional[str] = None,
+        separator: Optional[str] = None
     ) -> pd.DataFrame:
-        """Load CSV file from path or file content.
-
+        """Load CSV file from path or file content with automatic format detection.
+        
         Args:
             file_path: Path to CSV file
             file_content: Raw bytes of CSV file (for uploaded files)
-
+            encoding: File encoding (auto-detected if None)
+            separator: CSV separator (auto-detected if None)
+            
         Returns:
             Pandas DataFrame
-
+            
         Raises:
             ValueError: If file is invalid or too large
         """
         try:
-            # Load from file path
+            # Load file content
             if file_path:
                 path = Path(file_path)
-
+                
                 # Check file exists
                 if not path.exists():
                     raise ValueError(f"File not found: {file_path}")
-
+                
                 # Check file size
                 if path.stat().st_size > self.max_file_size_bytes:
                     max_mb = self.max_file_size_bytes / (1024 * 1024)
                     raise ValueError(f"File too large. Maximum size: {max_mb}MB")
-
-                df = pd.read_csv(file_path)
-
-            # Load from file content (uploaded file)
+                
+                # Read file content
+                with open(file_path, 'rb') as f:
+                    file_bytes = f.read()
+            
             elif file_content:
                 # Check size
                 if len(file_content) > self.max_file_size_bytes:
                     max_mb = self.max_file_size_bytes / (1024 * 1024)
                     raise ValueError(f"File too large. Maximum size: {max_mb}MB")
-
-                df = pd.read_csv(io.BytesIO(file_content))
-
+                
+                file_bytes = file_content
+            
             else:
                 raise ValueError("Must provide either file_path or file_content")
-
+            
+            # Auto-detect encoding if not provided
+            if encoding is None:
+                encoding = self._detect_encoding(file_bytes)
+                print(f"🔍 Detected encoding: {encoding}")
+            
+            # Decode file content
+            try:
+                file_str = file_bytes.decode(encoding)
+            except UnicodeDecodeError:
+                # Fallback encodings
+                for fallback_enc in ['utf-8', 'latin-1', 'cp1252', 'iso-8859-1']:
+                    try:
+                        file_str = file_bytes.decode(fallback_enc)
+                        encoding = fallback_enc
+                        print(f"⚠️  Used fallback encoding: {encoding}")
+                        break
+                    except UnicodeDecodeError:
+                        continue
+                else:
+                    raise ValueError("Could not decode file with any common encoding")
+            
+            # Auto-detect separator if not provided
+            if separator is None:
+                separator = self._detect_separator(file_str, encoding)
+                sep_names = {',': 'comma', ';': 'semicolon', '\t': 'tab', '|': 'pipe'}
+                print(f"🔍 Detected separator: {sep_names.get(separator, separator)}")
+            
+            # Try to read CSV with detected parameters
+            try:
+                df = pd.read_csv(
+                    io.StringIO(file_str),
+                    sep=separator,
+                    encoding=encoding,
+                    skipinitialspace=True,  # Remove leading whitespace
+                    on_bad_lines='warn'      # Warn but don't fail on bad lines
+                )
+            except Exception as e:
+                # Try with engine='python' for more flexibility
+                df = pd.read_csv(
+                    io.StringIO(file_str),
+                    sep=separator,
+                    encoding=encoding,
+                    engine='python',
+                    skipinitialspace=True,
+                    on_bad_lines='warn'
+                )
+            
             # Validate DataFrame
             if df.empty:
                 raise ValueError("CSV file is empty")
-
+            
             if len(df.columns) < 2:
                 raise ValueError("CSV must have at least 2 columns")
-
+            
+            # Clean column names (remove leading/trailing whitespace)
+            df.columns = df.columns.str.strip()
+            
+            print(f"✅ Loaded CSV: {df.shape[0]} rows × {df.shape[1]} columns")
+            
             return df
-
+            
         except pd.errors.EmptyDataError:
             raise ValueError("CSV file is empty or corrupted")
         except pd.errors.ParserError as e:
             raise ValueError(f"CSV parsing error: {str(e)}")
         except Exception as e:
-            raise ValueError(f"Error loading CSV: {str(e)}")
+            if "CSV" in str(e) or "parse" in str(e).lower():
+                raise ValueError(f"Error loading CSV: {str(e)}")
+            raise
+    
 
     def get_column_info(self, df: pd.DataFrame) -> Dict[str, str]:
         """Get information about each column's data type.
