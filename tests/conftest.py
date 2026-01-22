@@ -23,8 +23,8 @@ def temp_csv_file(sample_csv_data):
     os.unlink(temp_path)
 
 @pytest.fixture
-def mock_openai_response():
-    """Mock response from OpenAI API."""
+def mock_groq_response():
+    """Mock response from groq API."""
     return {
         "choices": [
             {
