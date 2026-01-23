@@ -117,6 +117,39 @@ dmypy.json
 .vscode/
 .idea/
 
+# Streamlit
+.streamlit/
+.streamlit_cache/
+.streamlit_cache2/
+*.streamlit.app.yaml
+
+# Project specific
+exports/
+__pycache__/
+*.pyc
+.env
+.env.local
+.env.*.local
+
 # OS
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Data files (optional - add if you don't want to track large datasets)
+# *.csv
+# *.xlsx
+# *.json
+
+# Cache
+.pytest_cache/
+.mypy_cache/
+.coverage
+
+# Python
+.venv/
+venv/
+env/
