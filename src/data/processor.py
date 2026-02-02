@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 from typing import Optional, Dict, List, Any
 import io
+import chardet
 
 
 class DataProcessor:

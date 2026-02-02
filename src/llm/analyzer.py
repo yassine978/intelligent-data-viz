@@ -33,16 +33,6 @@ class VisualizationAnalyzer:
         if track_tokens:
             self.token_counter = TokenCounter()
 
-# In analyze_and_recommend method, after getting LLM response:
-        # Get LLM response
-        print("🤖 Calling LLM API...")
-        response = self.llm.generate_completion(prompt)
-        
-        # Track tokens if enabled
-        if self.track_tokens:
-            token_stats = self.token_counter.track_request(prompt, response)
-            print(f"📊 Tokens used: {token_stats['total_tokens']} (${token_stats['estimated_cost']:.4f})")
-
     def _get_cache_key(self, problem: str, df: pd.DataFrame) -> str:
         """Generate unique cache key from problem and dataset.
         

@@ -1,0 +1,19 @@
+date,product,revenue,region,units_sold,category
+2024-01-01,Laptop A,12000,North,20,Electronics
+2024-01-01,Phone B,8000,South,40,Electronics
+2024-01-01,Desk C,3000,East,15,Furniture
+2024-02-01,Laptop A,15000,North,25,Electronics
+2024-02-01,Phone B,10000,South,50,Electronics
+2024-02-01,Chair D,4000,West,40,Furniture
+2024-03-01,Laptop A,18000,North,30,Electronics
+2024-03-01,Phone B,12000,South,60,Electronics
+2024-03-01,Desk C,3500,East,18,Furniture
+2024-04-01,Laptop A,20000,North,35,Electronics
+2024-04-01,Phone B,14000,South,70,Electronics
+2024-04-01,Chair D,5000,West,50,Furniture
+2024-05-01,Laptop A,22000,North,40,Electronics
+2024-05-01,Phone B,16000,South,80,Electronics
+2024-05-01,Desk C,4000,East,20,Furniture
+2024-06-01,Laptop A,25000,North,45,Electronics
+2024-06-01,Phone B,18000,South,90,Electronics
+2024-06-01,Chair D,6000,West,60,Furniture

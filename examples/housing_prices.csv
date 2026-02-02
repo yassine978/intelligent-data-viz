@@ -1,0 +1,16 @@
+price,size_sqm,rooms,location,year_built,condition
+250000,80,2,Paris,1990,Good
+300000,100,3,Lyon,2000,Excellent
+350000,120,3,Paris,2010,Good
+400000,140,4,Lyon,2015,Excellent
+450000,160,4,Paris,2020,Excellent
+280000,90,2,Marseille,1995,Average
+320000,110,3,Paris,2005,Good
+380000,130,3,Lyon,2012,Excellent
+420000,150,4,Paris,2018,Excellent
+480000,170,5,Paris,2022,Excellent
+260000,85,2,Lyon,1992,Good
+310000,105,3,Marseille,2003,Average
+360000,125,3,Paris,2011,Good
+410000,145,4,Lyon,2016,Excellent
+470000,165,4,Paris,2021,Excellent
