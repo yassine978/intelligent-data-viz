@@ -95,6 +95,7 @@ class TestFullVisualizationFlow:
         assert output_path.exists()
         assert output_path.stat().st_size > 0
 
+    @pytest.mark.skipif(not os.getenv("GROQ_API_KEY"), reason="GROQ_API_KEY not set")
     def test_flow_with_invalid_data(self):
         """Test error handling with invalid data."""
         processor = DataProcessor()
@@ -200,5 +201,6 @@ class TestDataIntegrity:
         # Valid columns
         assert processor.validate_columns_exist(sample_housing_data, ["price", "size_sqm"])
         
-        # Invalid columns
-        assert not processor.validate_columns_exist(sample_housing_data, ["nonexistent_column"])
+        # Invalid columns should raise ValueError
+        with pytest.raises(ValueError, match="Columns not found"):
+            processor.validate_columns_exist(sample_housing_data, ["nonexistent_column"])
