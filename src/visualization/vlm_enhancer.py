@@ -12,8 +12,8 @@ import io
 import plotly.graph_objects as go
 from langchain_core.messages import HumanMessage
 import pandas as pd
-from utils.logger import get_logger
-from utils.exceptions import VisualizationError
+from src.utils.logger import get_logger
+from src.utils.exceptions import VisualizationError
 
 logger = get_logger(__name__)
 

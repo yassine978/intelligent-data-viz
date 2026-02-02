@@ -8,8 +8,8 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
-from utils.exceptions import VisualizationError
-from utils.logger import get_logger
+from src.utils.exceptions import VisualizationError
+from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

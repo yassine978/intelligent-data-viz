@@ -4,7 +4,7 @@ Visualization Styler - Applies uniform styling with colorblind-safe palettes
 
 from typing import Dict
 import plotly.graph_objects as go
-from utils.logger import get_logger
+from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

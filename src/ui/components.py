@@ -7,7 +7,7 @@ import streamlit as st
 from typing import Any, List, Dict, Optional, Callable
 import plotly.graph_objects as go
 import pandas as pd
-from utils.logger import get_logger
+from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
