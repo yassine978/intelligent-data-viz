@@ -179,4 +179,3 @@ MIT License - See LICENSE file for details
 ---
 
 **Master 2 BDIA - Data Visualization Project**
-**Deadline**: February 7, 2026
