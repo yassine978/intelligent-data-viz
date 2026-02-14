@@ -140,7 +140,7 @@ pre-commit install
 
 ## 🌐 Deployment
 
-**Live Demo**: [Coming Soon - Hugging Face Spaces]
+**Live Demo**: https://huggingface.co/spaces/Yassineh13/intelligent-data-viz
 
 The app is deployed on Hugging Face Spaces with automatic deployment from the main branch.
 
